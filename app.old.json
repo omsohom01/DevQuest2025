@@ -43,10 +43,16 @@
         {
           "cameraPermission": "Allow DevQuest to access camera for QR code scanning."
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b12a6dcd-0358-4a86-bfc9-a0ecbfc134cf"
+      }
     }
   }
 }
