@@ -6,6 +6,7 @@ import {
     Alert,
     Animated,
     Dimensions,
+    Image,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
@@ -31,6 +32,10 @@ export default function RegisterScreen({ navigation }: any) {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [nameFocused, setNameFocused] = useState(false);
+    const [emailFocused, setEmailFocused] = useState(false);
+    const [passwordFocused, setPasswordFocused] = useState(false);
+    const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
     const { signUp } = useAuth();
     const colorScheme = useColorScheme();
     const colors = Colors[colorScheme ?? 'light'];
@@ -39,8 +44,10 @@ export default function RegisterScreen({ navigation }: any) {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(50)).current;
     const scaleAnim = useRef(new Animated.Value(0.8)).current;
+    const buttonScale = useRef(new Animated.Value(1)).current;
 
     useEffect(() => {
+        // Start animations on mount
         Animated.parallel([
             Animated.timing(fadeAnim, {
                 toValue: 1,
@@ -88,6 +95,22 @@ export default function RegisterScreen({ navigation }: any) {
         }
     };
 
+    const handleButtonPressIn = () => {
+        Animated.spring(buttonScale, {
+            toValue: 0.95,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    const handleButtonPressOut = () => {
+        Animated.spring(buttonScale, {
+            toValue: 1,
+            friction: 3,
+            tension: 40,
+            useNativeDriver: true,
+        }).start();
+    };
+
     return (
         <KeyboardAvoidingView
             style={[styles.container, { backgroundColor: colors.background }]}
@@ -95,9 +118,11 @@ export default function RegisterScreen({ navigation }: any) {
         >
             <LinearGradient
                 colors={colorScheme === 'dark'
-                    ? ['#1a1a2e', '#16213e', '#0f3460']
+                    ? ['#0D1117', '#161B22', '#0D1117']
                     : [colors.primary + '10', colors.secondary + '10', colors.background]}
                 style={StyleSheet.absoluteFill}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 1 }}
             />
 
             <ScrollView
@@ -113,17 +138,16 @@ export default function RegisterScreen({ navigation }: any) {
                         }
                     ]}
                 >
-                    <LinearGradient
-                        colors={[colors.primary, colors.secondary]}
-                        style={styles.logoContainer}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                    >
-                        <Ionicons name="sparkles" size={50} color="#fff" />
-                    </LinearGradient>
-                    <Text style={[styles.title, { color: colors.text }]}>Join Votum</Text>
+                    <View style={styles.logoContainer}>
+                        <Image
+                            source={require('@/assets/images/Votum.png')}
+                            style={styles.logoImage}
+                            resizeMode="contain"
+                        />
+                    </View>
+                    <Text style={[styles.title, { color: colors.text }]}>Votum</Text>
                     <Text style={[styles.subtitle, { color: colors.icon }]}>
-                        Start Your Innovation Journey Today
+                        Shape the Future. Create Your Account.
                     </Text>
                 </Animated.View>
 
@@ -138,41 +162,77 @@ export default function RegisterScreen({ navigation }: any) {
                 >
                     <View style={[styles.card, { backgroundColor: colors.card }]}>
                         <Text style={[styles.cardTitle, { color: colors.text }]}>
-                            Create Account 🚀
+                            Register Now 🌟
+                        </Text>
+                        <Text style={[styles.cardSubtitle, { color: colors.icon }]}>
+                            Join the innovation community
                         </Text>
 
-                        <View style={[styles.inputContainer, { backgroundColor: colors.background }]}>
+                        <View style={[
+                            styles.inputContainer,
+                            {
+                                backgroundColor: colors.background,
+                                borderWidth: 2,
+                                borderColor: nameFocused ? colors.primary : 'transparent',
+                                shadowColor: nameFocused ? colors.primary : '#000',
+                                shadowOpacity: nameFocused ? 0.3 : 0.05,
+                            }
+                        ]}>
                             <Ionicons name="person" size={22} color={colors.primary} style={styles.inputIcon} />
                             <TextInput
                                 style={[styles.input, { color: colors.text }]}
-                                placeholder="Your full name"
+                                placeholder="Enter your full name"
                                 placeholderTextColor={colors.icon}
                                 value={name}
                                 onChangeText={setName}
+                                onFocus={() => setNameFocused(true)}
+                                onBlur={() => setNameFocused(false)}
                             />
                         </View>
 
-                        <View style={[styles.inputContainer, { backgroundColor: colors.background }]}>
+                        <View style={[
+                            styles.inputContainer,
+                            {
+                                backgroundColor: colors.background,
+                                borderWidth: 2,
+                                borderColor: emailFocused ? colors.primary : 'transparent',
+                                shadowColor: emailFocused ? colors.primary : '#000',
+                                shadowOpacity: emailFocused ? 0.3 : 0.05,
+                            }
+                        ]}>
                             <Ionicons name="mail" size={22} color={colors.primary} style={styles.inputIcon} />
                             <TextInput
                                 style={[styles.input, { color: colors.text }]}
-                                placeholder="Email address"
+                                placeholder="Enter your email"
                                 placeholderTextColor={colors.icon}
                                 value={email}
                                 onChangeText={setEmail}
+                                onFocus={() => setEmailFocused(true)}
+                                onBlur={() => setEmailFocused(false)}
                                 autoCapitalize="none"
                                 keyboardType="email-address"
                             />
                         </View>
 
-                        <View style={[styles.inputContainer, { backgroundColor: colors.background }]}>
+                        <View style={[
+                            styles.inputContainer,
+                            {
+                                backgroundColor: colors.background,
+                                borderWidth: 2,
+                                borderColor: passwordFocused ? colors.primary : 'transparent',
+                                shadowColor: passwordFocused ? colors.primary : '#000',
+                                shadowOpacity: passwordFocused ? 0.3 : 0.05,
+                            }
+                        ]}>
                             <Ionicons name="lock-closed" size={22} color={colors.primary} style={styles.inputIcon} />
                             <TextInput
                                 style={[styles.input, { color: colors.text }]}
-                                placeholder="Create password"
+                                placeholder="Enter your password"
                                 placeholderTextColor={colors.icon}
                                 value={password}
                                 onChangeText={setPassword}
+                                onFocus={() => setPasswordFocused(true)}
+                                onBlur={() => setPasswordFocused(false)}
                                 secureTextEntry={!showPassword}
                             />
                             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
@@ -184,14 +244,25 @@ export default function RegisterScreen({ navigation }: any) {
                             </TouchableOpacity>
                         </View>
 
-                        <View style={[styles.inputContainer, { backgroundColor: colors.background }]}>
+                        <View style={[
+                            styles.inputContainer,
+                            {
+                                backgroundColor: colors.background,
+                                borderWidth: 2,
+                                borderColor: confirmPasswordFocused ? colors.primary : 'transparent',
+                                shadowColor: confirmPasswordFocused ? colors.primary : '#000',
+                                shadowOpacity: confirmPasswordFocused ? 0.3 : 0.05,
+                            }
+                        ]}>
                             <Ionicons name="shield-checkmark" size={22} color={colors.primary} style={styles.inputIcon} />
                             <TextInput
                                 style={[styles.input, { color: colors.text }]}
-                                placeholder="Confirm password"
+                                placeholder="Confirm your password"
                                 placeholderTextColor={colors.icon}
                                 value={confirmPassword}
                                 onChangeText={setConfirmPassword}
+                                onFocus={() => setConfirmPasswordFocused(true)}
+                                onBlur={() => setConfirmPasswordFocused(false)}
                                 secureTextEntry={!showConfirmPassword}
                             />
                             <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
@@ -203,112 +274,167 @@ export default function RegisterScreen({ navigation }: any) {
                             </TouchableOpacity>
                         </View>
 
-                        <View style={[styles.roleContainer, { backgroundColor: colors.background }]}>
-                            <Ionicons name="briefcase" size={22} color={colors.primary} style={styles.inputIcon} />
-                            <Text style={[styles.roleLabel, { color: colors.text }]}>I am a:</Text>
-                        </View>
+                        <Text style={[styles.roleLabel, { color: colors.text }]}>Select Your Role:</Text>
 
                         <View style={styles.roleButtons}>
                             <TouchableOpacity
                                 style={[
                                     styles.roleButton,
-                                    role === 'participant' && { backgroundColor: colors.primary },
-                                    role !== 'participant' && { backgroundColor: colors.background }
+                                    role !== 'participant' && { backgroundColor: colors.background },
                                 ]}
                                 onPress={() => setRole('participant')}
+                                activeOpacity={0.8}
                             >
-                                <Ionicons
-                                    name="people"
-                                    size={24}
-                                    color={role === 'participant' ? '#fff' : colors.icon}
-                                />
-                                <Text style={[
-                                    styles.roleButtonText,
-                                    { color: role === 'participant' ? '#fff' : colors.text }
-                                ]}>
-                                    Participant
-                                </Text>
+                                {role === 'participant' ? (
+                                    <LinearGradient
+                                        colors={[colors.primary, colors.secondary]}
+                                        style={styles.roleButtonGradient}
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 1 }}
+                                    >
+                                        <Ionicons
+                                            name="people"
+                                            size={24}
+                                            color="#fff"
+                                        />
+                                        <Text style={[styles.roleButtonText, { color: '#fff' }]}>
+                                            Participant
+                                        </Text>
+                                    </LinearGradient>
+                                ) : (
+                                    <>
+                                        <Ionicons
+                                            name="people"
+                                            size={24}
+                                            color={colors.icon}
+                                        />
+                                        <Text style={[styles.roleButtonText, { color: colors.text }]}>
+                                            Participant
+                                        </Text>
+                                    </>
+                                )}
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 style={[
                                     styles.roleButton,
-                                    role === 'judge' && { backgroundColor: colors.primary },
-                                    role !== 'judge' && { backgroundColor: colors.background }
+                                    role !== 'judge' && { backgroundColor: colors.background },
                                 ]}
                                 onPress={() => setRole('judge')}
+                                activeOpacity={0.8}
                             >
-                                <Ionicons
-                                    name="ribbon"
-                                    size={24}
-                                    color={role === 'judge' ? '#fff' : colors.icon}
-                                />
-                                <Text style={[
-                                    styles.roleButtonText,
-                                    { color: role === 'judge' ? '#fff' : colors.text }
-                                ]}>
-                                    Judge
-                                </Text>
+                                {role === 'judge' ? (
+                                    <LinearGradient
+                                        colors={[colors.primary, colors.secondary]}
+                                        style={styles.roleButtonGradient}
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 1 }}
+                                    >
+                                        <Ionicons
+                                            name="ribbon"
+                                            size={24}
+                                            color="#fff"
+                                        />
+                                        <Text style={[styles.roleButtonText, { color: '#fff' }]}>
+                                            Judge
+                                        </Text>
+                                    </LinearGradient>
+                                ) : (
+                                    <>
+                                        <Ionicons
+                                            name="ribbon"
+                                            size={24}
+                                            color={colors.icon}
+                                        />
+                                        <Text style={[styles.roleButtonText, { color: colors.text }]}>
+                                            Judge
+                                        </Text>
+                                    </>
+                                )}
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 style={[
                                     styles.roleButton,
-                                    role === 'organizer' && { backgroundColor: colors.primary },
-                                    role !== 'organizer' && { backgroundColor: colors.background }
+                                    role !== 'organizer' && { backgroundColor: colors.background },
                                 ]}
                                 onPress={() => setRole('organizer')}
+                                activeOpacity={0.8}
                             >
-                                <Ionicons
-                                    name="star"
-                                    size={24}
-                                    color={role === 'organizer' ? '#fff' : colors.icon}
-                                />
-                                <Text style={[
-                                    styles.roleButtonText,
-                                    { color: role === 'organizer' ? '#fff' : colors.text }
-                                ]}>
-                                    Organizer
-                                </Text>
+                                {role === 'organizer' ? (
+                                    <LinearGradient
+                                        colors={[colors.primary, colors.secondary]}
+                                        style={styles.roleButtonGradient}
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 1 }}
+                                    >
+                                        <Ionicons
+                                            name="star"
+                                            size={24}
+                                            color="#fff"
+                                        />
+                                        <Text style={[styles.roleButtonText, { color: '#fff' }]}>
+                                            Organizer
+                                        </Text>
+                                    </LinearGradient>
+                                ) : (
+                                    <>
+                                        <Ionicons
+                                            name="star"
+                                            size={24}
+                                            color={colors.icon}
+                                        />
+                                        <Text style={[styles.roleButtonText, { color: colors.text }]}>
+                                            Organizer
+                                        </Text>
+                                    </>
+                                )}
                             </TouchableOpacity>
                         </View>
 
-                        <TouchableOpacity
-                            style={[styles.button, { opacity: loading ? 0.7 : 1 }]}
-                            onPress={handleRegister}
-                            disabled={loading}
-                            activeOpacity={0.8}
-                        >
-                            <LinearGradient
-                                colors={[colors.primary, colors.secondary]}
-                                style={styles.buttonGradient}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 0 }}
+                        <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
+                            <TouchableOpacity
+                                style={[styles.button, { opacity: loading ? 0.7 : 1 }]}
+                                onPress={handleRegister}
+                                onPressIn={handleButtonPressIn}
+                                onPressOut={handleButtonPressOut}
+                                disabled={loading}
+                                activeOpacity={0.9}
                             >
-                                {loading ? (
-                                    <ActivityIndicator color="#fff" size="small" />
-                                ) : (
-                                    <>
-                                        <Text style={styles.buttonText}>Create Account</Text>
-                                        <Ionicons name="checkmark-circle" size={20} color="#fff" />
-                                    </>
-                                )}
-                            </LinearGradient>
-                        </TouchableOpacity>
+                                <LinearGradient
+                                    colors={[colors.primary, colors.secondary]}
+                                    style={styles.buttonGradient}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                >
+                                    {loading ? (
+                                        <ActivityIndicator color="#fff" size="small" />
+                                    ) : (
+                                        <>
+                                            <Text style={styles.buttonText}>Create Account</Text>
+                                            <Ionicons name="checkmark-circle" size={20} color="#fff" />
+                                        </>
+                                    )}
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        </Animated.View>
                     </View>
 
                     <View style={styles.footer}>
                         <Text style={[styles.footerText, { color: colors.icon }]}>
-                            Already have an account?{' '}
+                            Already have an account?
                         </Text>
-                        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('Login')}
+                            style={styles.linkButton}
+                        >
                             <LinearGradient
                                 colors={[colors.primary, colors.secondary]}
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}
                                 style={styles.linkGradient}
                             >
-                                <Text style={styles.linkText}>Sign In</Text>
+                                <Text style={styles.linkText}>Sign In Now</Text>
                             </LinearGradient>
                         </TouchableOpacity>
                     </View>
@@ -324,68 +450,84 @@ const styles = StyleSheet.create({
     },
     scrollContent: {
         flexGrow: 1,
+        justifyContent: 'center',
         padding: 24,
-        paddingTop: 50,
+        paddingTop: 60,
     },
     header: {
         alignItems: 'center',
-        marginBottom: 32,
+        marginBottom: 40,
     },
     logoContainer: {
-        width: 90,
-        height: 90,
-        borderRadius: 45,
+        width: 100,
+        height: 100,
+        borderRadius: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 16,
+        marginBottom: 20,
         elevation: 10,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.3,
         shadowRadius: 10,
+        backgroundColor: '#fff',
+        overflow: 'hidden',
+        padding: 2,
+    },
+    logoImage: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 18,
     },
     title: {
-        fontSize: 32,
+        fontSize: 42,
         fontWeight: 'bold',
         marginTop: 8,
         letterSpacing: 1,
     },
     subtitle: {
-        fontSize: 14,
-        marginTop: 6,
+        fontSize: 15,
+        marginTop: 8,
         textAlign: 'center',
         letterSpacing: 0.5,
+        paddingHorizontal: 20,
     },
     formContainer: {
         width: '100%',
     },
     card: {
-        borderRadius: 24,
-        padding: 24,
-        marginBottom: 20,
-        elevation: 5,
+        borderRadius: 28,
+        borderTopLeftRadius: 28,
+        borderTopRightRadius: 28,
+        borderBottomLeftRadius: 24,
+        borderBottomRightRadius: 24,
+        padding: 28,
+        marginBottom: 24,
+        elevation: 8,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
-        shadowRadius: 12,
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.2,
+        shadowRadius: 16,
     },
     cardTitle: {
-        fontSize: 24,
+        fontSize: 28,
         fontWeight: 'bold',
-        marginBottom: 20,
+        marginBottom: 8,
+    },
+    cardSubtitle: {
+        fontSize: 14,
+        marginBottom: 24,
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: 16,
-        paddingHorizontal: 16,
+        borderRadius: 50,
+        paddingHorizontal: 20,
         paddingVertical: 4,
-        marginBottom: 14,
+        marginBottom: 16,
         elevation: 2,
-        shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
+        shadowRadius: 6,
     },
     inputIcon: {
         marginRight: 12,
@@ -395,58 +537,63 @@ const styles = StyleSheet.create({
         fontSize: 16,
         paddingVertical: 14,
     },
-    roleContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderRadius: 16,
-        paddingHorizontal: 16,
-        paddingVertical: 14,
-        marginBottom: 12,
-        marginTop: 4,
-    },
     roleLabel: {
         fontSize: 16,
-        fontWeight: '600',
+        fontWeight: 'bold',
+        marginBottom: 12,
+        marginTop: 4,
     },
     roleButtons: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        gap: 8,
-        marginBottom: 20,
+        gap: 10,
+        marginBottom: 24,
     },
     roleButton: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 16,
-        borderRadius: 14,
-        gap: 6,
+        borderRadius: 16,
+        overflow: 'hidden',
         elevation: 2,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
+        minHeight: 70,
+    },
+    roleButtonGradient: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 6,
+        paddingVertical: 12,
+        elevation: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.4,
+        shadowRadius: 10,
     },
     roleButtonText: {
         fontSize: 12,
-        fontWeight: '600',
+        fontWeight: '700',
     },
     button: {
-        marginTop: 4,
-        borderRadius: 16,
+        marginTop: 12,
+        borderRadius: 50,
         overflow: 'hidden',
-        elevation: 5,
+        elevation: 8,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.4,
+        shadowRadius: 12,
     },
     buttonGradient: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 16,
-        gap: 8,
+        paddingVertical: 18,
+        gap: 10,
     },
     buttonText: {
         color: '#fff',
@@ -458,25 +605,32 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 32,
         marginBottom: 20,
+        gap: 8,
     },
     footerText: {
-        fontSize: 14,
+        fontSize: 15,
+        fontWeight: '500',
+    },
+    linkButton: {
+        borderRadius: 12,
+        overflow: 'hidden',
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
     },
     linkGradient: {
-        paddingHorizontal: 4,
-        borderRadius: 4,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 12,
     },
     linkText: {
-        fontSize: 14,
+        fontSize: 15,
         fontWeight: 'bold',
         color: '#fff',
-    },
-    pickerContainer: {
-        display: 'none',
-    },
-    picker: {
-        display: 'none',
+        letterSpacing: 0.3,
     },
 });

@@ -6,7 +6,7 @@ module.exports = ({ config }) => ({
   slug: "votum",
   version: "1.0.0",
   orientation: "portrait",
-  icon: "./assets/images/icon.png",
+  icon: "./assets/images/Votum.png",
   scheme: "votum",
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
@@ -19,7 +19,7 @@ module.exports = ({ config }) => ({
     package: "com.sohom.votum", // your unique ID
     adaptiveIcon: {
       backgroundColor: "#E6F4FE",
-      foregroundImage: "./assets/images/android-icon-foreground.png",
+      foregroundImage: "./assets/images/Votum.png",
       backgroundImage: "./assets/images/android-icon-background.png",
       monochromeImage: "./assets/images/android-icon-monochrome.png",
     },

@@ -525,11 +525,19 @@ export default function App() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <AuthProvider>
-                <NavigationContainer>
-                    <AppNavigator />
-                </NavigationContainer>
+                <NavigationContainerWrapper />
             </AuthProvider>
         </GestureHandlerRootView>
+    );
+}
+
+function NavigationContainerWrapper() {
+    const { user } = useAuth();
+
+    return (
+        <NavigationContainer key={user?.uid ?? 'logged-out'}>
+            <AppNavigator />
+        </NavigationContainer>
     );
 }
 
